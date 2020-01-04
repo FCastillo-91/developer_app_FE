@@ -14,14 +14,14 @@ class App extends React.Component {
     developers: [
       { name: "Sue Moron-Garcia", skills: ["TDD", "Debugging"], available: false, dateJoined: "2019-12-02", id: uuid() },
       { name: "Fiona Castillo", skills: ["HTML, CSS"], available: true, dateJoined: "2019-11-30", id: uuid() },
-      { name: "Harine Vijay", skills: ["Java"], available: false, dateJoined: "2019-12-01", id: uuid()},
+      { name: "Harine Vijay", skills: ["Java"], available: false, dateJoined: "2019-12-01", id: uuid() },
       { name: "Ilga Koko", skills: ["HTML", "TDD", "React"], available: false, dateJoined: "2019-10-22", id: uuid() },
       { name: "Nichola Evans", skills: ["CSS", "Ruby", "Python"], available: false, dateJoined: "2019-11-02", id: uuid() },
     ],
   }
 
   // Any component that updates state MUST live in the same component as the state.
-  addNewDeveloper = (name, skills,date) => {
+  addNewDeveloper = (name, skills, date) => {
     // Create a new developer object
     const newDeveloper = {
       name: name,
@@ -41,9 +41,22 @@ class App extends React.Component {
       developers: copyOfDevs
     })
   }
+
+  deleteDeveloper = (id) => {
+    //make a copye of the state and remove the developer
+    const filteredDevs = this.state.developers.filter(dev => {
+      if (dev.id === id) return false;
+      else return true;
+    })
+
+    //update the state with the new shorter array
+    this.setState({
+      developers: filteredDevs
+    })
+  }
   render() {
     const availableDevelopers = this.state.developers.filter(developer => {
-        return developer.available === true
+      return developer.available === true
     });
 
     const unavailableDevelopers = this.state.developers.filter(developer => {
@@ -52,33 +65,37 @@ class App extends React.Component {
     return (
       <div className="App">
         <div className="container">
-        <Header />
-        <AddDeveloper addNewDevFunc={this.addNewDeveloper} />
-        <DeveloperCount count={availableDevelopers.length} />
-        <h2>Available right now:</h2>
-        {availableDevelopers.map((developer) => {
-          return (
-            <Developer
-            key={developer.id}
-            available={developer.available}
-            name={developer.name}
-            skills={developer.skills}
-            dateJoined={developer.dateJoined} 
-            />
-          );
-        })}
-        <h2>Busy working on something else:</h2>
-        {unavailableDevelopers.map((developer) => {
-          return (
-            <Developer
-            key={developer.id}
-            available={developer.available}
-            name={developer.name}
-            skills={developer.skills}
-            dateJoined={developer.dateJoined} 
-            />
-          );
-        })}
+          <Header />
+          <AddDeveloper addNewDevFunc={this.addNewDeveloper} />
+          <DeveloperCount count={availableDevelopers.length} />
+          <h2>Available right now:</h2>
+          {availableDevelopers.map((developer) => {
+            return (
+              <Developer
+                key={developer.id}
+                available={developer.available}
+                name={developer.name}
+                skills={developer.skills}
+                dateJoined={developer.dateJoined}
+                deleteDevFunc={this.deleteDeveloper}
+                id={developer.id}
+              />
+            );
+          })}
+          <h2>Busy working on something else:</h2>
+          {unavailableDevelopers.map((developer) => {
+            return (
+              <Developer
+                key={developer.id}
+                available={developer.available}
+                name={developer.name}
+                skills={developer.skills}
+                dateJoined={developer.dateJoined}
+                deleteDevFunc={this.deleteDeveloper}
+                id={developer.id}
+              />
+            );
+          })}
         </div>
       </div>
     );
