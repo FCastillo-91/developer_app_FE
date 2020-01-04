@@ -20,9 +20,8 @@ class App extends React.Component {
     ],
   }
 
-  // Any component that updates state MUST live in the same component as the state.
   addNewDeveloper = (name, skills, date) => {
-    // Create a new developer object
+
     const newDeveloper = {
       name: name,
       skills: skills,
@@ -30,30 +29,41 @@ class App extends React.Component {
       dateJoined: date,
       id: uuid()
     }
-    // Add that developer to the list
-    // We must never update state directly, setState is the correct way of updating state
-    // Slice makes a copy of an array
+
     const copyOfDevs = this.state.developers.slice()
     copyOfDevs.push(newDeveloper)
 
-    // Ensure the state is updated (setState)
     this.setState({
       developers: copyOfDevs
     })
   }
 
   deleteDeveloper = (id) => {
-    //make a copye of the state and remove the developer
     const filteredDevs = this.state.developers.filter(dev => {
       if (dev.id === id) return false;
       else return true;
     })
 
-    //update the state with the new shorter array
     this.setState({
       developers: filteredDevs
     })
   }
+
+  bookDeveloper = (id) => {
+    const bookedDevs = this.state.developers;
+
+    bookedDevs.forEach(dev => {
+      if (dev.id === id) return dev.available = false;
+    })
+
+    this.setState({
+      developers: bookedDevs
+    })
+  }
+  //make a copy of the state and book the developer
+  // const bookedDevs = this.state.developers.
+  //update the state with the new longer array
+
   render() {
     const availableDevelopers = this.state.developers.filter(developer => {
       return developer.available === true
@@ -78,6 +88,7 @@ class App extends React.Component {
                 skills={developer.skills}
                 dateJoined={developer.dateJoined}
                 deleteDevFunc={this.deleteDeveloper}
+                bookDevFunc={this.bookDeveloper}
                 id={developer.id}
               />
             );

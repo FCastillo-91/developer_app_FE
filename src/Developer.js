@@ -7,6 +7,11 @@ class Developer extends React.Component {
       this.props.deleteDevFunc(this.props.id)
 
   } 
+
+  bookBtnClick = () => {
+    this.props.bookDevFunc(this.props.id)
+
+} 
     render() {
         return (
             <div className="row">
@@ -24,7 +29,7 @@ class Developer extends React.Component {
                 </div>
                 <div className="col12 col sm-2">
                     {this.props.available === true ? 
-                    <button className="btn btn-primary book-button">Book</button> : 
+                    <button className="btn btn-primary book-button" onClick={this.bookBtnClick}>Book</button> : 
                     <button disabled className="btn btn-primary book-button">Unavailable</button>
                     }
                 </div>
