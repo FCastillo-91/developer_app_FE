@@ -50,15 +50,13 @@ class App extends React.Component {
   }
 
   deleteDeveloper = (id) => {
-    const url = `https://rei5asqft1.execute-api.eu-west-1.amazonaws.com/dev/developers/${id}`;
-    axios.delete(url)
+    axios.delete(`https://rei5asqft1.execute-api.eu-west-1.amazonaws.com/dev/developers/${id}`)
       .then((response) => {
         const myDevs = this.state.developers    
         const filteredDevs = myDevs.filter(dev => {
         if (dev.developerId === id) return false;
           else return true;  
         })
-        
         this.setState({
           developers: filteredDevs
         });
@@ -67,6 +65,25 @@ class App extends React.Component {
         console.log(err);
       });  
   };
+
+  bookDeveloper = dev => {
+    
+   const parameters = {available:!dev.available}; 
+ 
+    axios.put(`https://rei5asqft1.execute-api.eu-west-1.amazonaws.com/dev/developers/${dev.id}`, parameters)
+      .then((response) => {
+        const bookedDevs = this.state.developers;
+        bookedDevs.forEach(item => {
+          if (item.developerId === dev.id) return item.available = parameters.available;
+        }) 
+        this.setState({
+          developers: bookedDevs
+        })
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+  }
 
   render() {
     const availableDevelopers = this.state.developers.filter(developer => {

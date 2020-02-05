@@ -7,8 +7,8 @@ class Developer extends React.Component {
         this.props.deleteDevFunc(this.props.id)
     } 
 
-    handleBook = () => {
-        this.props.bookDevFunc(this.props.id)
+    handleBookStatus = () => {
+        this.props.bookDevFunc(this.props)
     } 
 
     render() {
@@ -26,10 +26,10 @@ class Developer extends React.Component {
                 <div className="col-12 col-sm-3">
                     <button className="btn btn-outline-danger btn-sm mr-1" onClick={this.handleDelete}>Delete</button>
                 {this.props.available === true ? (
-                    <button className="btn btn-outline-primary btn-sm" onClick={this.handleBook}>Book</button>
+                    <button className="btn btn-outline-primary btn-sm" onClick={this.handleBookStatus}>Book</button>
                 ) : (
-                    <button disabled className="btn btn-outline-primary btn-sm book-button">
-                    Unavailable
+                    <button className="btn btn-outline-primary btn-sm" onClick={this.handleBookStatus}>
+                    Unbook
                     </button>
                 )}
                 </div>

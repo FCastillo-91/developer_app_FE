@@ -1,7 +1,5 @@
 import React from "react";
 
-// Controlled component
-// Component (with Form elements) where we are keeping track on the state of what values have been inputted by the user
 class AddDeveloper extends React.Component {
     state = {
         developerName: "",
