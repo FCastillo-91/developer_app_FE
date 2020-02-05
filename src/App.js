@@ -1,5 +1,6 @@
 import React from 'react';
 import uuid from "uuid/v4";
+import axios from "axios";
 import Header from "./Header";
 import DeveloperCount from "./DeveloperCount";
 import Developer from "./Developer";
@@ -11,13 +12,22 @@ import './App.css';
 // State must live in the parent of any compomnents that need to access it
 class App extends React.Component {
   state = {
-    developers: [
-      { name: "Sue Moron-Garcia", skills: ["TDD", "Debugging"], available: false, dateJoined: "2019-12-02", id: uuid() },
-      { name: "Fiona Castillo", skills: ["HTML, CSS"], available: true, dateJoined: "2019-11-30", id: uuid() },
-      { name: "Harine Vijay", skills: ["Java"], available: false, dateJoined: "2019-12-01", id: uuid() },
-      { name: "Ilga Koko", skills: ["HTML", "TDD", "React"], available: false, dateJoined: "2019-10-22", id: uuid() },
-      { name: "Nichola Evans", skills: ["CSS", "Ruby", "Python"], available: false, dateJoined: "2019-11-02", id: uuid() },
-    ],
+    developers: []
+  };
+
+  componentDidMount() {
+    //Fetch the developers making a GET request using axios
+    axios.get("https://rei5asqft1.execute-api.eu-west-1.amazonaws.com/dev/developers")
+      .then((response) => {
+        const developers = response.data.developers;
+        this.setState({
+          developers: developers
+        })
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+    //Then, set the developers as the state of the application.
   }
 
   addNewDeveloper = (name, skills, date) => {
@@ -26,16 +36,22 @@ class App extends React.Component {
       name: name,
       skills: skills,
       available: true,
-      dateJoined: date,
-      id: uuid()
-    }
+      dateJoined: date
+    };
 
-    const copyOfDevs = this.state.developers.slice()
-    copyOfDevs.push(newDeveloper)
+    axios.post("https://rei5asqft1.execute-api.eu-west-1.amazonaws.com/dev/developers", newDeveloper)
+      .then((response) => {
+        const newDev = response.data;
+        const copyOfDevs = this.state.developers.slice()
+        copyOfDevs.push(newDev)
 
-    this.setState({
-      developers: copyOfDevs
-    })
+        this.setState({
+          developers: copyOfDevs
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   deleteDeveloper = (id) => {
@@ -66,11 +82,11 @@ class App extends React.Component {
 
   render() {
     const availableDevelopers = this.state.developers.filter(developer => {
-      return developer.available === true
+      return developer.available == 1;
     });
 
     const unavailableDevelopers = this.state.developers.filter(developer => {
-      return developer.available === false
+      return developer.available == 0;
     })
     return (
       <div className="App">
@@ -82,14 +98,14 @@ class App extends React.Component {
           {availableDevelopers.map((developer) => {
             return (
               <Developer
-                key={developer.id}
+                key={developer.developerId}
                 available={developer.available}
                 name={developer.name}
                 skills={developer.skills}
                 dateJoined={developer.dateJoined}
                 deleteDevFunc={this.deleteDeveloper}
                 bookDevFunc={this.bookDeveloper}
-                id={developer.id}
+                id={developer.developerId}
               />
             );
           })}
@@ -97,13 +113,13 @@ class App extends React.Component {
           {unavailableDevelopers.map((developer) => {
             return (
               <Developer
-                key={developer.id}
+                key={developer.developerId}
                 available={developer.available}
                 name={developer.name}
                 skills={developer.skills}
                 dateJoined={developer.dateJoined}
                 deleteDevFunc={this.deleteDeveloper}
-                id={developer.id}
+                id={developer.developerId}
               />
             );
           })}

@@ -19,7 +19,7 @@ class Developer extends React.Component {
                     <p>{this.props.name}</p>
                 </div>
                 <div className="col-12 col-sm-3">
-                    <p>{this.props.skills.join(", ")}</p>
+                    <p>{this.props.skills}</p>
                 </div>
                 <div className="col-12 col-sm-2">
                     <p>{this.props.dateJoined}</p>

@@ -28,11 +28,9 @@ class AddDeveloper extends React.Component {
     }
 
     handleAdd = () => {
-        const skillsArray = this.state.skills.split(", ");
-
         this.props.addNewDevFunc(
             this.state.developerName,
-            skillsArray,
+            this.state.skills,
             this.state.dateJoined
         );
     }
