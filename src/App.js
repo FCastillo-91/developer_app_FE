@@ -1,5 +1,4 @@
 import React from 'react';
-import uuid from "uuid/v4";
 import axios from "axios";
 import Header from "./Header";
 import DeveloperCount from "./DeveloperCount";
@@ -8,15 +7,12 @@ import AddDeveloper from "./AddDeveloper";
 
 import './App.css';
 
-// Only class components can have state
-// State must live in the parent of any compomnents that need to access it
 class App extends React.Component {
   state = {
     developers: []
   };
 
   componentDidMount() {
-    //Fetch the developers making a GET request using axios
     axios.get("https://rei5asqft1.execute-api.eu-west-1.amazonaws.com/dev/developers")
       .then((response) => {
         const developers = response.data.developers;
@@ -27,11 +23,9 @@ class App extends React.Component {
       .catch((err) => {
         console.log(err);
       })
-    //Then, set the developers as the state of the application.
   }
 
   addNewDeveloper = (name, skills, date) => {
-
     const newDeveloper = {
       name: name,
       skills: skills,
@@ -41,6 +35,7 @@ class App extends React.Component {
 
     axios.post("https://rei5asqft1.execute-api.eu-west-1.amazonaws.com/dev/developers", newDeveloper)
       .then((response) => {
+        console.log(response)
         const newDev = response.data;
         const copyOfDevs = this.state.developers.slice()
         copyOfDevs.push(newDev)
@@ -55,44 +50,38 @@ class App extends React.Component {
   }
 
   deleteDeveloper = (id) => {
-    const filteredDevs = this.state.developers.filter(dev => {
-      if (dev.id === id) return false;
-      else return true;
-    })
-
-    this.setState({
-      developers: filteredDevs
-    })
-  }
-
-  bookDeveloper = (id) => {
-    const bookedDevs = this.state.developers;
-
-    bookedDevs.forEach(dev => {
-      if (dev.id === id) return dev.available = false;
-    })
-
-    this.setState({
-      developers: bookedDevs
-    })
-  }
-  //make a copy of the state and book the developer
-  // const bookedDevs = this.state.developers.
-  //update the state with the new longer array
+    const url = `https://rei5asqft1.execute-api.eu-west-1.amazonaws.com/dev/developers/${id}`;
+    axios.delete(url)
+      .then((response) => {
+        const myDevs = this.state.developers    
+        const filteredDevs = myDevs.filter(dev => {
+        if (dev.developerId === id) return false;
+          else return true;  
+        })
+        
+        this.setState({
+          developers: filteredDevs
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });  
+  };
 
   render() {
     const availableDevelopers = this.state.developers.filter(developer => {
-      return developer.available == 1;
-    });
-
+      return developer.available === true;
+    })
     const unavailableDevelopers = this.state.developers.filter(developer => {
-      return developer.available == 0;
+      return developer.available === false;
     })
     return (
       <div className="App">
         <div className="container">
           <Header />
-          <AddDeveloper addNewDevFunc={this.addNewDeveloper} />
+          <AddDeveloper 
+            addNewDevFunc={this.addNewDeveloper}  
+            />
           <DeveloperCount count={availableDevelopers.length} />
           <h2>Available right now:</h2>
           {availableDevelopers.map((developer) => {
@@ -119,6 +108,7 @@ class App extends React.Component {
                 skills={developer.skills}
                 dateJoined={developer.dateJoined}
                 deleteDevFunc={this.deleteDeveloper}
+                bookDevFunc={this.bookDeveloper}
                 id={developer.developerId}
               />
             );
