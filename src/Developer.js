@@ -8,7 +8,7 @@ class Developer extends React.Component {
     } 
 
     handleBookStatus = () => {
-        this.props.bookDevFunc(this.props)
+        this.props.bookDevStatusFunc(this.props)
     } 
 
     render() {

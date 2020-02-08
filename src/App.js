@@ -66,18 +66,18 @@ class App extends React.Component {
       });  
   };
 
-  bookDeveloper = dev => {
+  bookDeveloperStatus = dev => {
     
    const parameters = {available:!dev.available}; 
  
     axios.put(`https://rei5asqft1.execute-api.eu-west-1.amazonaws.com/dev/developers/${dev.id}`, parameters)
       .then((response) => {
-        const bookedDevs = this.state.developers;
-        bookedDevs.forEach(item => {
+        const bookStatusOfDevs = this.state.developers;
+        bookStatusOfDevs.forEach(item => {
           if (item.developerId === dev.id) return item.available = parameters.available;
         }) 
         this.setState({
-          developers: bookedDevs
+          developers: bookStatusOfDevs
         })
       })
       .catch((err) => {
@@ -110,7 +110,7 @@ class App extends React.Component {
                 skills={developer.skills}
                 dateJoined={developer.dateJoined}
                 deleteDevFunc={this.deleteDeveloper}
-                bookDevFunc={this.bookDeveloper}
+                bookDevStatusFunc={this.bookDeveloperStatus}
                 id={developer.developerId}
               />
             );
@@ -125,7 +125,7 @@ class App extends React.Component {
                 skills={developer.skills}
                 dateJoined={developer.dateJoined}
                 deleteDevFunc={this.deleteDeveloper}
-                bookDevFunc={this.bookDeveloper}
+                bookDevStatusFunc={this.bookDeveloperStatus}
                 id={developer.developerId}
               />
             );
